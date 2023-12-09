@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple DTMF Dialer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;700&display=swap">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Ubuntu', sans-serif;
+            background: url('blobs-l.svg') center/cover no-repeat; /* Set page background image */
+            color: #fff; /* White text */
+        }
+
+        #navbar {
+            width: 100%;
+            background: linear-gradient(#00A2FF, #004D80); /* Adjusted gradient */
+            text-align: center;
+            padding: 10px 0;
+            box-shadow: 0 12px 11px -11px rgba(0, 0, 0, 0.6);
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between; /* Adjusted to space-between for the button */
+        }
+
+        #navbar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 300; /* Light variant */
+            flex-grow: 1; /* Ensures the text takes available space */
+        }
+
+        #about-button {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        #dialer-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            background: url('dialer-background-image.png') center/cover no-repeat; /* Set dialer background image */
+            margin-top: 60px; /* Adjusted margin for the dialer */
+        }
+
+        #keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            background-color: transparent;
+            box-sizing: border-box;
+            padding: 4px; /* Add 4 pixels of padding inside the buttons */
+        }
+
+        #about-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #about-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            color: #000; /* Black text */
+            position: relative;
+        }
+
+        #close-about {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 24px;
+            line-height: 1;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #close-window-button {
+            cursor: pointer;
+            background-color: #0076BA; /* Blue background color */
+            color: #fff; /* White text */
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar">
+    <h1>Simple DTMF Dialer</h1>
+    <div id="about-button" onclick="openAbout()">
+        <img src="about-icon.png" alt="About" width="24" height="24">
+    </div>
+</div>
+
+<div id="dialer-container">
+    <div id="keypad">
+        <div class="button" onmousedown="previewTone('1')" onmouseup="stopTone()">
+            <img src="1.png" alt="1">
+        </div>
+        <!-- Add similar structure for other buttons -->
+        <div class="button" onmousedown="previewTone('2')" onmouseup="stopTone()">
+            <img src="2.png" alt="2">
+        </div>
+        <div class="button" onmousedown="previewTone('3')" onmouseup="stopTone()">
+            <img src="3.png" alt="3">
+        </div>
+        <div class="button" onmousedown="callAction()" onmouseup="stopTone()">
+            <img src="call.png" alt="Call">
+        </div>
+        <div class="button" onmousedown="previewTone('4')" onmouseup="stopTone()">
+            <img src="4.png" alt="4">
+        </div>
+        <div class="button" onmousedown="previewTone('5')" onmouseup="stopTone()">
+            <img src="5.png" alt="5">
+        </div>
+        <div class="button" onmousedown="previewTone('6')" onmouseup="stopTone()">
+            <img src="6.png" alt="6">
+        </div>
+        <div class="button" onmousedown="endCallAction()" onmouseup="stopTone()">
+            <img src="end_call.png" alt="End Call">
+        </div>
+        <div class="button" onmousedown="previewTone('7')" onmouseup="stopTone()">
+            <img src="7.png" alt="7">
+        </div>
+        <div class="button" onmousedown="previewTone('8')" onmouseup="stopTone()">
+            <img src="8.png" alt="8">
+        </div>
+        <div class="button" onmousedown="previewTone('9')" onmouseup="stopTone()">
+            <img src="9.png" alt="9">
+        </div>
+        <div class="button" onmousedown="holdAction()" onmouseup="stopTone()">
+            <img src="hold.png" alt="Hold">
+        </div>
+        <div class="button" onmousedown="previewTone('*')" onmouseup="stopTone()">
+            <img src="star.png" alt="*">
+        </div>
+        <div class="button" onmousedown="previewTone('0')" onmouseup="stopTone()">
+            <img src="0.png" alt="0">
+        </div>
+        <div class="button" onmousedown="previewTone('#')" onmouseup="stopTone()">
+            <img src="hash.png" alt="#">
+        </div>
+        <div class="button" onmousedown="transferAction()" onmouseup="stopTone()">
+            <img src="transfer.png" alt="Transfer">
+        </div>
+    </div>
+</div>
+
+<div id="about-modal">
+    <div id="about-content">
+        <span id="close-about" onclick="closeAbout()"></span>
+        <h2>About Simple DTMF Dialer</h2>
+        <p>This is a simple DTMF dialer web application.</p>
+        <p>Made by jeorgeskam on GitHub</p>
+        <!-- Add more about information as needed -->
+        <button id="close-window-button" onclick="closeAboutWindow()">Close Window</button>
+    </div>
+</div>
+
+<script>
+    // Your existing JavaScript code for the dialer
+
+    function openAbout() {
+        document.getElementById('about-modal').style.display = 'flex';
+    }
+
+    function closeAbout() {
+        document.getElementById('about-modal').style.display = 'none';
+    }
+
+    function closeAboutWindow() {
+        document.getElementById('about-modal').style.display = 'none';
+    }
+</script>
+
+<script>
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let currentOscillator;
+
+    function playTone(frequency1, frequency2) {
+        const oscillator1 = audioContext.createOscillator();
+        const oscillator2 = audioContext.createOscillator();
+
+        oscillator1.type = 'sine';
+        oscillator2.type = 'sine';
+
+        oscillator1.frequency.setValueAtTime(frequency1, audioContext.currentTime);
+        oscillator2.frequency.setValueAtTime(frequency2, audioContext.currentTime);
+
+        oscillator1.connect(audioContext.destination);
+        oscillator2.connect(audioContext.destination);
+
+        oscillator1.start();
+        oscillator2.start();
+
+        currentOscillator = [oscillator1, oscillator2];
+    }
+
+    function previewTone(char) {
+        stopTone();
+        const dtmfMap = {
+            '1': [697, 1209],
+            '2': [697, 1336],
+            '3': [697, 1477],
+            '4': [770, 1209],
+            '5': [770, 1336],
+            '6': [770, 1477],
+            '7': [852, 1209],
+            '8': [852, 1336],
+            '9': [852, 1477],
+            '*': [941, 1209],
+            '0': [941, 1336],
+            '#': [941, 1477],
+        };
+        playTone(dtmfMap[char][0], dtmfMap[char][1]);
+    }
+
+    function stopTone() {
+        if (currentOscillator) {
+            currentOscillator.forEach(oscillator => {
+                oscillator.stop();
+                oscillator.disconnect(audioContext.destination);
+            });
+            currentOscillator = null;
+        }
+    }
+
+    function callAction() {
+        // Play the "A" DTMF tone
+        playTone(697, 1633);
+    }
+
+    function endCallAction() {
+        // Play the "B" DTMF tone
+        playTone(770, 1633);
+    }
+
+    function holdAction() {
+        // Play the "C" DTMF tone
+        playTone(852, 1633);
+    }
+
+    function transferAction() {
+        // Play the "D" DTMF tone
+        playTone(941, 1633);
+    }
+</script>
+
+<script>
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const body = document.body;
+
+    function updateTheme() {
+        body.style.setProperty('--bg-color', darkModeMediaQuery.matches ? '#000' : '#fff');
+    }
+
+    darkModeMediaQuery.addListener(updateTheme);
+    updateTheme();
+</script>
+
+</body>
+</html>
