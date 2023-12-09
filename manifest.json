@@ -2,7 +2,7 @@
   "name": "Simple DTMF Dialer",
   "short_name": "DTMF Dialer",
   "description": "A simple DTMF dialer web application",
-  "start_url": "/",
+  "start_url": "/simple-dtmf-tone-generator-web-app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#004D80",
