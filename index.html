@@ -220,8 +220,10 @@
 <script>
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     let currentOscillator;
+    
 
-    function playTone(frequency1, frequency2) {
+document.getElementById('buttonId').addEventListener('click', function() {
+    playTone(frequency1, frequency2){
         const oscillator1 = audioContext.createOscillator();
         const oscillator2 = audioContext.createOscillator();
 
