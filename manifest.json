@@ -1,14 +1,14 @@
 {
-  "name": "DTMF Dialer",
+  "name": "Simple DTMF Dialer",
   "short_name": "DTMF Dialer",
-  "description": "A Simple DTMF Dialer",
+  "description": "A simple DTMF dialer web application",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#004D80",
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
